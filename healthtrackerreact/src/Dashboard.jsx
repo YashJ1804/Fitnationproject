@@ -479,10 +479,19 @@ const Dashboard = () => {
 
         <div className={css.gridContainer}>
           <div
-            className={css.glassCard}
-            onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-4px)'}
-            onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
-          >
+  className={css.glassCard}
+  onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-4px)'}
+  onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
+>
+  <div className={css.cardHeader}>
+    <div className={css.cardIcon}>📊</div>
+    <h3 className={css.cardTitle}>Health Distribution</h3>
+    <span className={css.cardSubtitle}>Overview</span>
+  </div>
+
+  <PieChart />
+</div>
+
             <div className={css.cardHeader}>
               <div className={css.cardIcon}>⚖️</div>
               <h3 className={css.cardTitle}>BMI Calculator</h3>
