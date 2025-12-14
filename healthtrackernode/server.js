@@ -2,26 +2,28 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const bodyParser = require("body-parser");
+require("dotenv").config();
 
-const createAccountRoute = require("./models/createaccount");
-const signInRoute = require("./models/signin");
-const updateProfileRoute = require("./models/updateProfile");  // ✅ single import
+const createAccountRoute = require("./routes/createaccount");
+const signInRoute = require("./routes/signin");
+const updateProfileRoute = require("./routes/updateProfile");
+const chatbotRoute = require("./routes/chatbot");
+const rankRoute = require("./routes/rank");
 
 const app = express();
 
-// Middleware
 app.use(cors());
 app.use(bodyParser.json());
 
-// MongoDB Connection
-mongoose.connect("mongodb://localhost:27017/healthtracker")
+mongoose
+  .connect("mongodb://localhost:27017/healthtracker")
   .then(() => console.log("MongoDB Connected"))
   .catch(err => console.log("DB Error:", err));
 
-// Routes
 app.use("/api", createAccountRoute);
 app.use("/api", signInRoute);
-app.use("/api", updateProfileRoute);   // ✅ correct mount
+app.use("/api", updateProfileRoute);
+app.use("/api/chatbot", chatbotRoute);
+app.use("/api/rank", rankRoute);
 
-// Start Server
 app.listen(5000, () => console.log("Server running on port 5000"));
