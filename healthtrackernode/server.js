@@ -9,11 +9,13 @@ const signInRoute = require("./routes/signin");
 const updateProfileRoute = require("./routes/updateProfile");
 const chatbotRoute = require("./routes/chatbot");
 const rankRoute = require("./routes/rank");
+const authRoute = require("./routes/auth");
 
 const app = express();
 
 app.use(cors());
 app.use(bodyParser.json());
+app.use("/api", authRoute);
 
 mongoose
   .connect("mongodb://localhost:27017/healthtracker")
