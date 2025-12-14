@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 import css from './Dashboard.module.css';
+import PieChart from "./components/PieChart";
+import Chatbot from "./components/Chatbot";
 
 
 const Dashboard = () => {
