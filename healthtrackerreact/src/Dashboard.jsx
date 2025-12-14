@@ -61,11 +61,14 @@ const Dashboard = () => {
       newPassword: editData.newPassword
     };
 
-    const res = await fetch(`http://localhost:5000/api/update-profile/${user._id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
-    });
+    const res = await fetch("http://localhost:5000/api/update-profile", {
+  method: "PUT",
+  headers: {
+    "Content-Type": "application/json",
+    "Authorization": `Bearer ${localStorage.getItem("token")}`
+  },
+  body: JSON.stringify(payload)
+});
 
     const data = await res.json();
 
