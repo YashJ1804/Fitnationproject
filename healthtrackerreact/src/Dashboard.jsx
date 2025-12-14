@@ -24,6 +24,14 @@ const Dashboard = () => {
   const [chatMessages, setChatMessages] = useState([]);
   const [chatInput, setChatInput] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const [rankings, setRankings] = useState([]);
+  useEffect(() => {
+  fetch("http://localhost:5000/api/rank")
+    .then(res => res.json())
+    .then(data => setRankings(data))
+    .catch(err => console.log(err));
+}, []);
+
 
   useEffect(() => {
     const autoSlide = setInterval(() => {
@@ -384,23 +392,37 @@ const Dashboard = () => {
     return icons[sport] || '🏆';
   };
 
-  const handleChatSend = () => {
-    if (!chatInput.trim()) return;
+ const handleChatSend = async () => {
+  if (!chatInput.trim()) return;
 
-    const msg = chatInput.toLowerCase().trim();
-    let reply = "";
+  // Show user message immediately
+  setChatMessages(prev => [...prev, "You: " + chatInput]);
 
-    if (["hi", "hello", "hiii"].includes(msg)) reply = "Hello! I am FitChat 😊 How can I help?";
-    else if (msg.includes("bmi")) reply = "BMI shows if your weight is healthy.";
-    else if (msg.includes("water")) reply = "Drink at least 2–3 liters every day!";
-    else if (msg.includes("best athlete")) reply = "Virat Kohli is a legend! 🔥";
-    else if (msg.includes("fitnation")) reply = "FitNation helps you track your fitness journey.";
-    else if (msg.includes("motivation")) reply = "Small progress every day leads to big results! 💪";
-    else reply = "Sorry 😅 I can answer only simple fitness questions.";
+  try {
+    const res = await fetch("http://localhost:5000/api/chatbot", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ message: chatInput })
+    });
 
-    setChatMessages(prev => [...prev, "You: " + chatInput, "FitChat: " + reply]);
-    setChatInput("");
-  };
+    const data = await res.json();
+
+    setChatMessages(prev => [
+      ...prev,
+      "FitChat: " + data.reply
+    ]);
+  } catch (error) {
+    setChatMessages(prev => [
+      ...prev,
+      "FitChat: Sorry, server error 😕"
+    ]);
+  }
+
+  setChatInput("");
+};
+
 
   return (
     <div className={css.container}>
@@ -481,6 +503,20 @@ const Dashboard = () => {
         )}
 
         <div className={css.gridContainer}>
+          <div className={css.glassCard}>
+  <div className={css.cardHeader}>
+    <div className={css.cardIcon}>🏆</div>
+    <h3 className={css.cardTitle}>Leaderboard</h3>
+    <span className={css.cardSubtitle}>Top Users</span>
+  </div>
+
+  {rankings.map((u, i) => (
+    <p key={u._id}>
+      {i + 1}. {u.name} — {u.points || 0}
+    </p>
+  ))}
+</div>
+
           <div
   className={css.glassCard}
   onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-4px)'}
